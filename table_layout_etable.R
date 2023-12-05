@@ -126,9 +126,9 @@ options("modelsummary_format_numeric_latex" = "plain")
 
 datasummary_tex <- function(formula = f, data_new = data_new, output = "latex", linespace = T,
                             sideways = F, coltitle, var_column = "", note, append = "none", header,
-                            filename = "print", title = title, tabular = "tabularx", stats,
+                            filename = "print", title = title, tabular = "tabularx", stats, escape = T,
                             fontsize = "small", placement = "t", label = "", tablewidth = 0.98){
-  tex_output <- datasummary(formula = formula, data = data_new, output = "latex", title = title) %>% 
+  tex_output <- datasummary(formula = formula, data = data_new, output = "latex", title = title, escape = escape) %>% 
     as.character() %>% 
     str_split("\n") %>% 
     unlist()
