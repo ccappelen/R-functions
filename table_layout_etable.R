@@ -14,8 +14,8 @@ set_table_layout <- function(x, size = "small", note, clustervar, subsample,
   
   # INSERT MARKERS TO IDENTIFY TABLE SECTIONS
   x <- c("% TABLE HEAD", x)
-  x <- append(x, "% TABLE MAIN", after = min(which(str_detect(dd, "\\midrule"))))
-  x <- append(x, "% TABLE FOOT", after = max(which(str_detect(dd, "\\midrule")))-1)
+  x <- append(x, "% TABLE MAIN", after = min(which(str_detect(x, "\\midrule"))))
+  x <- append(x, "% TABLE FOOT", after = max(which(str_detect(x, "\\midrule")))-1)
   
   if(tabularx & tabularY) stop("ERROR: tabularx and tabularY can't both be TRUE")
   if(sidewaystable){
