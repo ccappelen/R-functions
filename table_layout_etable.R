@@ -82,7 +82,7 @@ set_table_layout <- function(x, size = "small", note, clustervar, subsample,
   x <- str_replace_all(x , "(?<=\\$\\\\times \\$).*(?<=\\$\\=\\$)", "")
   
   if(!missing(linespacing) & linespacing > 0){
-    main_table <- min(which(str_detect(x, "\\\\midrule"))) + 1
+    main_table <- min(which(str_detect(x, "\\\\midrule"))) + 2
     main_table_split <- x[main_table] %>% 
       str_split("\n") %>% 
       unlist()
