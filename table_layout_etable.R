@@ -12,6 +12,11 @@ set_table_layout <- function(x, size = "small", note, clustervar, subsample,
                              tabularx = FALSE, tablewidth=0.98, robust = F, conley = F, conley_cut, tabularY = FALSE,
                              sidewaystable = FALSE, linespacing = 1, replace.name){
   
+  # INSERT MARKERS TO IDENTIFY TABLE SECTIONS
+  x <- c("% TABLE HEAD", x)
+  x <- append(x, "% TABLE MAIN", after = min(which(str_detect(dd, "\\midrule"))))
+  x <- append(x, "% TABLE FOOT", after = max(which(str_detect(dd, "\\midrule")))-1)
+  
   if(tabularx & tabularY) stop("ERROR: tabularx and tabularY can't both be TRUE")
   if(sidewaystable){
     x <- str_replace(x, "\\\\begin\\{table\\}", "\\\\begin\\{sidewaystable\\}")
