@@ -106,7 +106,7 @@ fitstat_register("y_mean", function(x)
   round(mean(eval(x$call$data)[x$obs_selection$obsRemoved,][[paste0(x$fml[[2]])]], na.rm = T), 3)
 }, alias = "Mean Y")
 
-fitstat_register("panel_fe", function(x) x$fixef_sizes[[1]], alias = "Territories")
+fitstat_register("panel_fe", function(x) x$fixef_sizes[[1]], alias = "Units")
 fitstat_register("year_fe", function(x) x$fixef_sizes[[2]], alias = "Years")
 fitstat_register("f1", function(x) fitstat(x, "ivf1.stat"), alias = "F-test (1st stage)")
 fitstat_register("w1", function(x) fitstat(x, "ivwald1.stat"), alias = "Wald (1st stage)")
