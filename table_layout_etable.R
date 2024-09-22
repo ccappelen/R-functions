@@ -10,12 +10,21 @@ pacman::p_load("stringr")
 
 set_table_layout <- function(x, size = "small", note, clustervar, subsample, 
                              tabularx = FALSE, tablewidth=0.98, robust = F, conley = F, conley_cut, tabularY = FALSE,
-                             sidewaystable = FALSE, linespacing = 1, replace.name){
+                             sidewaystable = FALSE, linespacing = 1, replace.name,
+                             multipanel = F, panel_no = 1, panel_header = ""
+){
   
   # INSERT MARKERS TO IDENTIFY TABLE SECTIONS
   x <- c("% TABLE HEAD", x)
   x <- append(x, "% TABLE MAIN", after = min(which(str_detect(x, "\\midrule"))))
   x <- append(x, "% TABLE FOOT", after = max(which(str_detect(x, "\\midrule")))-1)
+  
+  # nmod <- x[which(str_detect(x, "TABLE MAIN"))+1] %>%
+  #   str_extract_all("&") %>%
+  #   unlist() %>% length()
+  
+  nmod <- str_extract_all(x[which(str_detect(x, "TABLE MAIN"))-2], "\\d") %>% 
+    unlist() %>% as.numeric() %>% max()
   
   if(tabularx & tabularY) stop("ERROR: tabularx and tabularY can't both be TRUE")
   if(sidewaystable){
@@ -96,8 +105,45 @@ set_table_layout <- function(x, size = "small", note, clustervar, subsample,
     x[main_table] <- main_table_split
   }
   
+  if(multipanel){
+    
+    if(panel_no == 1){
+      
+      panel_head <- paste0(
+        " & \\multicolumn{",
+        nmod,
+        "}{c}{\\emph{",
+        panel_header,
+        "}} \\\\"
+      )
+      
+      x <- append(x, panel_head, after = which(str_detect(x, "TABLE MAIN")))
+      x <- replace(x, which(str_detect(x, "TABLE FOOT"))+1, paste0("\\cmidrule(lr){2-", nmod+1,"}"))
+      x <- x[-c(which(str_detect(x, "end\\{tabularx\\}")):length(x))]
+      x <- append(x, "[2em]", after = length(x))
+      
+    }
+    
+    if(panel_no == 2){
+      
+      panel_head <- paste0(
+        " & \\multicolumn{",
+        nmod,
+        "}{c}{\\emph{",
+        panel_header,
+        "}} \\\\"
+      )
+      
+      x <- x[-c(1:which(str_detect(x, "TABLE MAIN"))-1)]
+      x <- append(x, panel_head, after = which(str_detect(x, "TABLE MAIN")))
+      x <- replace(x, which(str_detect(x, "TABLE FOOT"))+1, paste0("\\cmidrule(lr){2-", nmod+1,"}"))
+    }
+    
+  }
+  
   x
 }
+
 
 fitstat_register("y_mean", function(x) 
   if(length(x$obs_selection) == 0){
