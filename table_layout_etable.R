@@ -16,7 +16,10 @@ set_table_layout <- function(x, size = "small", note, clustervar, subsample,
   
   # INSERT MARKERS TO IDENTIFY TABLE SECTIONS
   x <- c("% TABLE HEAD", x)
-  x <- append(x, "% TABLE MAIN", after = min(which(str_detect(x, "\\midrule"))))
+  x <- append(x, "% TABLE MAIN", 
+              after = which(str_split(x, "\\&") %>% 
+                              lapply(FUN = function(y) paste0(y, collapse = "") %>% str_remove_all(" ")) %>% 
+                              str_detect("\\(1\\)\\(2\\)"))+1)
   x <- append(x, "% TABLE FOOT", after = max(which(str_detect(x, "\\midrule")))-1)
   
   # nmod <- x[which(str_detect(x, "TABLE MAIN"))+1] %>%
