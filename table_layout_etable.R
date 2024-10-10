@@ -10,7 +10,7 @@ pacman::p_load("stringr")
 
 set_table_layout <- function(x, size = "small", note, clustervar, subsample, 
                              tabularx = FALSE, tablewidth=0.98, robust = F, conley = F, conley_cut, tabularY = FALSE,
-                             sidewaystable = FALSE, linespacing = 1, replace.name,
+                             sidewaystable = FALSE, linespacing = 1, replace.name, conley.se.row = F,
                              multipanel = F, panel_no = 1, panel_header = ""
 ){
   
@@ -69,7 +69,7 @@ set_table_layout <- function(x, size = "small", note, clustervar, subsample,
   }else if(conley){
     ftex2add = paste0(ftex2add, "Conley standard errors in parentheses (", conley_cut, " km cutoff)")
   }else if(robust){
-    ftex2add = paste0(ftex2add, "Robust standard errors in parentheses.")
+    ftex2add = paste0(ftex2add, "Heteroskedasticity-robust standard errors in parentheses.")
   }else{
     ftex2add = paste0(ftex2add, "Standard errors in parentheses.")
   }
@@ -81,6 +81,18 @@ set_table_layout <- function(x, size = "small", note, clustervar, subsample,
   }
   if(nchar(ftex2add) > 0){
     x[x=="%end:tab\n"] = ftex2add
+  }
+  
+  
+  if(conley.se.row == T){
+    se_rownum <- which(str_detect(x, "Standard-Errors &"))
+    se_row_split <- x[se_rownum] %>% str_split("&") %>% .[[1]]
+    se_con_orig <- se_row_split[se_row_split %>% str_detect("km")] %>% str_trim()
+    se_con_cut <- str_extract(se_con_orig, "(?<=\\{c\\}\\{).*(?=\\})")
+    se_con_new <- str_replace(se_con_orig, "(?<=\\{c\\}\\{).*(?=\\})", paste0("Conley Spatial-HAC (", se_con_cut, ")"))
+    se_row_split[se_row_split %>% str_detect("km")] <- se_con_new
+    se_row_new <- paste0(se_row_split, collapse = " & ")
+    x[se_rownum] <- se_row_new
   }
   
   tex_subsample = ""
